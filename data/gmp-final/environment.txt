@@ -1,0 +1,26 @@
+date: 2026-10-27T14:01:20+08:00
+command: MAXK= MAXLIST=10000 /home/matthias/lean4-repr/run_bench.sh release /home/matthias/lean4-repr/logs/2026-10-27/nat-repr/gmp-final 11 30
+cpu: 11 (L3 shared with 8-15,72-79)
+worktree commit: 5cfd73b9283a5c24be878d5d877e68c337109827
+uname: Linux <hostname redacted> 7.0.0-38-generic #38-Ubuntu SMP PREEMPT_DYNAMIC Fri Sep  4 09:10:14 UTC 2026 x86_64 GNU/Linux
+Lean (version 4.37.0-pre, x86_64-pc-linux-gnu, commit 5cfd73b9283a5c24be878d5d877e68c337109827, Release)
+Ubuntu clang version 18.1.3 (1ubuntu1)
+libgmp-dev:amd64	2:6.3.0+dfsg-2ubuntu6.1
+30fb5c13864ff1af95ae07d9d2c0ccf33cf728ae973ab9274895bf0fbc005ac4  /home/matthias/lean4-repr/logs/2026-10-27/nat-repr/gmp-final/NatReprBench
+2754683a065a49079f6ddd8dd51616c7046cde8676e573795642d32b831e2cbc  /home/matthias/lean4-repr/wt-bench/build/release/stage1/bin/../lib/lean/libleanshared.so
+ef3d24326066a830c2780927bab32e7d26e3d33f46e2b8c17e69aef4689d6f0a  /home/matthias/lean4-repr/wt-bench/build/release/stage1/bin/../lib/lean/libleanrt.a
+	linux-vdso.so.1 (0x0000751b01781000)
+	libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x0000751b01182000)
+	libgmp.so.10 => /lib/x86_64-linux-gnu/libgmp.so.10 (0x0000751b010fe000)
+	libuv.so.1 => /lib/x86_64-linux-gnu/libuv.so.1 (0x0000751b010c9000)
+	libssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x0000751b0101f000)
+	libcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x0000751b00b0b000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000751b00a22000)
+	libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x0000751b009f4000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000751b007e1000)
+	/lib64/ld-linux-x86-64.so.2 (0x0000751b01783000)
+Model name:                              AMD Ryzen Threadripper PRO 9985WX 64-Cores
+CPU(s) scaling MHz:                      67%
+CPU max MHz:                             5476.2891
+CPU min MHz:                             1220.6190
+performance

@@ -1,0 +1,62 @@
+From 5cfd73b9283a5c24be878d5d877e68c337109827 Mon Sep 17 00:00:00 2001
+From: Matthias Goergens <matthias.goergens@gmail.com>
+Date: Tue, 27 Oct 2026 11:36:22 +0800
+Subject: [PATCH] bench: expose the three conversions of large Nats
+
+---
+ src/Init/Data/Repr.lean | 11 +++++++++++
+ src/include/lean/lean.h |  1 +
+ src/runtime/object.cpp  |  6 ++++++
+ 3 files changed, 18 insertions(+)
+
+diff --git a/src/Init/Data/Repr.lean b/src/Init/Data/Repr.lean
+index 16b6e565e7..8251964e4c 100644
+--- a/src/Init/Data/Repr.lean
++++ b/src/Init/Data/Repr.lean
+@@ -516,3 +516,14 @@ instance : ReprAtom UInt64 := ⟨⟩
+ instance : ReprAtom USize  := ⟨⟩
+ 
+ deriving instance Repr for Lean.SourceInfo
++
++/-! Benchmark-only entry points for the three conversions of numbers beyond `USize`. -/
++namespace Nat
++/-- Divide and conquer in Lean. -/
++def benchReprDC (n : Nat) : String := reprBig n
++/-- The runtime's conversion (`mpz_get_str` with GMP). -/
++@[extern "lean_string_of_nat"]
++def benchReprExtern (n : Nat) : String := String.ofList (toDigits 10 n)
++/-- The conversion `Nat.reprFast` used before. -/
++def benchReprList (n : Nat) : String := String.ofList (toDigits 10 n)
++end Nat
+diff --git a/src/include/lean/lean.h b/src/include/lean/lean.h
+index ffc7862289..791c78b697 100644
+--- a/src/include/lean/lean.h
++++ b/src/include/lean/lean.h
+@@ -1559,6 +1559,7 @@ static inline uint8_t lean_string_dec_eq(b_lean_obj_arg s1, b_lean_obj_arg s2) {
+ static inline uint8_t lean_string_dec_lt(b_lean_obj_arg s1, b_lean_obj_arg s2) { return lean_string_lt(s1, s2); }
+ LEAN_EXPORT uint64_t lean_string_hash(b_lean_obj_arg);
+ LEAN_EXPORT lean_obj_res lean_string_of_usize(size_t);
++LEAN_EXPORT lean_obj_res lean_string_of_nat(b_lean_obj_arg);
+ LEAN_EXPORT uint8_t lean_string_memcmp(b_lean_obj_arg s1, b_lean_obj_arg s2, b_lean_obj_arg lstart, b_lean_obj_arg rstart, b_lean_obj_arg len);
+ LEAN_EXPORT uint8_t lean_string_memcmp_lt(b_lean_obj_arg s1, b_lean_obj_arg s2, b_lean_obj_arg lstart, b_lean_obj_arg rstart, b_lean_obj_arg len);
+ LEAN_EXPORT uint8_t lean_string_memcmp_compare(b_lean_obj_arg s1, b_lean_obj_arg s2, b_lean_obj_arg lstart, b_lean_obj_arg rstart, b_lean_obj_arg len);
+diff --git a/src/runtime/object.cpp b/src/runtime/object.cpp
+index 9b2dd0c4b3..2359c16dcf 100644
+--- a/src/runtime/object.cpp
++++ b/src/runtime/object.cpp
+@@ -2548,6 +2548,12 @@ extern "C" LEAN_EXPORT obj_res lean_string_of_usize(size_t n) {
+     return mk_ascii_string_unchecked(std::to_string(n));
+ }
+ 
++extern "C" LEAN_EXPORT obj_res lean_string_of_nat(b_obj_arg n) {
++    if (lean_is_scalar(n))
++        return lean_string_of_usize(lean_unbox(n));
++    return mk_ascii_string_unchecked(mpz_value(n).to_string());
++}
++
+ static int string_memcmp_core(b_obj_arg s1, b_obj_arg s2, b_obj_arg lstart, b_obj_arg rstart, b_obj_arg len) {
+     // Thanks to the proof arguments we know that lstart, rstart and len are all scalars.
+     lean_assert(lean_is_scalar(lstart));
+-- 
+2.53.0
+
